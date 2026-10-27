@@ -31,6 +31,47 @@ def analyze_property(data: PropertyAnalysisInput) -> dict:
         "Final Verdict": verdict
     }
 
+from schema import PropertyAnalysisInput
+
+def analyze_property(data: PropertyAnalysisInput) -> dict:
+    total_investment = data.asking_price + data.repair_costs + data.closing_costs
+    flip_profit = data.after_repair_value - total_investment
+    flip_roi = (flip_profit / total_investment) * 100
+    
+    # Year 1 NOI (assuming 20% operating expenses)
+    annual_noi = (data.monthly_rent * 12) * 0.80
+    rental_yield = (annual_noi / total_investment) * 100
+    
+    # NEW LOGIC: Calculate 5-Year Projected NOI with compounding growth
+    growth_multiplier = 1 + (data.annual_rent_growth_rate / 100)
+    five_year_noi = []
+    current_noi = annual_noi
+    
+    for year in range(1, 6):
+        five_year_noi.append(round(current_noi, 2))
+        current_noi *= growth_multiplier
+        
+    total_5yr_cashflow = sum(five_year_noi)
+    
+    # Decision Matrix
+    if flip_roi >= 20.0:
+        verdict = "FIX & FLIP (High Short-Term ROI)"
+    elif rental_yield >= 8.0:
+        verdict = "BUY & HOLD (Strong Cash Flow)"
+    else:
+        verdict = "WALK AWAY (Insufficient Returns)"
+        
+    return {
+        "total_investment": total_investment,
+        "flip_profit": flip_profit,
+        "flip_roi": round(flip_roi, 2),
+        "annual_noi": round(annual_noi, 2),
+        "rental_yield": round(rental_yield, 2),
+        "five_year_noi": five_year_noi,
+        "total_5yr_cashflow": round(total_5yr_cashflow, 2),
+        "verdict": verdict
+    }
+
 # --- TEST THE ENGINE ---
 if __name__ == "__main__":
     # The clean data payload simulating a user input
