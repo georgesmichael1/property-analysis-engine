@@ -7,6 +7,7 @@ class PropertyAnalysisInput(BaseModel):
     after_repair_value: float = Field(..., gt=0, description="Estimated sale price after repairs (ARV) in USD")
     monthly_rent: float = Field(..., ge=0, description="Estimated monthly rental income in USD")
     closing_costs: float = Field(..., ge=0, description="Holding, closing, and administrative fees in USD")
+    annual_rent_growth_rate: float = Field(default=3.0, ge=0, le=50, description="Annual rent growth percentage")
 
 print("Schema Defined Successfully.\n")
 
