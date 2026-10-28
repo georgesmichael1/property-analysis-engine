@@ -4,10 +4,16 @@ def create_pdf_report(
     results: dict, 
     pie_chart_path: str, 
     bar_chart_path: str, 
+    client_id: str = "Standard User",
     output_filename: str = "Executive_Report.pdf"
 ) -> str:
     pdf = FPDF()
     pdf.add_page()
+    
+    # Authorized Client Header Stamp
+    pdf.set_font("Helvetica", style="I", size=9)
+    pdf.cell(0, 6, f"Authorized License: {client_id.upper()} | Generated via Streamline Engine", ln=True, align="R")
+    pdf.ln(2)
     
     # Report Header
     pdf.set_font("Helvetica", style="B", size=18)
